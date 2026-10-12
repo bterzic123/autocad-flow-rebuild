@@ -1,0 +1,1286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>Growth Audit — AutoCAD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: only light;
+  /* ---- AutoCAD mobile, extracted from their live screens ---- */
+  --ac-bg:#2E3341; --ac-card:#444F60; --ac-hair:#3F4352; --ac-blue:#0696D7; --ac-blue-dk:#0580B8;
+  --ac-link:#5BC2F2; --ac-ink:#FFFFFF; --ac-txt:#E3E6EB; --ac-muted:#9BA3AE;
+  --ac-lav:#A3B5DF; --ac-lav-dk:#7F93C9; --ac-shade:#20242E; --ac-red:#E51051; --ac-sel:#0696D7;
+  --r-ctl:2px; --r-media:4px;
+  /* ---- the report shell, in AutoCAD's own palette (dark app -> dark shell) ---- */
+  --bg:#2E3341; --bg2:#384050; --surf:#384050;
+  --hair:rgba(255,255,255,.09); --hair2:rgba(255,255,255,.16);
+  --ink:#FFFFFF; --ink2:#C9CFD8; --ink3:#8D959E;
+  --accent:#0696D7; --accent-lift:#5BC2F2;
+  --panel:#FFFFFF; --panel-ink:#15181B; --panel-muted:#5F666D; --panel-line:#E9ECEF;
+  --accent-ink:#0477AD;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);
+  font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+@media(max-width:700px){.wrap{padding:0 20px}}
+
+/* ============ top bar ============ */
+.nav{position:sticky;top:0;z-index:70;background:rgba(46,51,65,.86);backdrop-filter:blur(18px) saturate(160%);
+  border-bottom:1px solid var(--hair)}
+.nav-in{max-width:1080px;margin:0 auto;padding:0 32px;height:58px;display:flex;align-items:center;gap:18px}
+@media(max-width:700px){.nav-in{padding:0 16px;gap:12px}}
+.nav-brand{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+.nav-brand .mk{width:26px;height:26px;flex:none;display:block}
+.nav-brand .mk svg{width:26px;height:26px;display:block}
+.nav-brand span{color:var(--ink2);font-weight:500}
+.nav-brand b{color:var(--ink);font-weight:600}
+.nav-links{margin-left:auto;display:flex;gap:2px;align-items:center}
+.nav-links button{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink3);transition:.16s}
+.nav-links button:hover{color:var(--ink)}
+.nav-links button.on{color:var(--ink);background:#444F60;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+@media(max-width:640px){.nav-brand span{display:none}}
+
+.view{display:none}
+.view.on{display:block}
+
+/* ============ hero ============ */
+.hero{padding:104px 0 0;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-340px;left:50%;transform:translateX(-50%);
+  width:1100px;height:640px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(6,150,215,.22),transparent 72%)}
+.hero::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(40% 50% at 6% 18%,rgba(229,16,81,.16),transparent 70%),
+   radial-gradient(38% 45% at 94% 16%,rgba(163,181,223,.16),transparent 70%)}
+.hero>*{position:relative;z-index:1}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-lift);margin-bottom:26px}
+.hero h1{font-size:76px;line-height:.98;font-weight:700;letter-spacing:-.045em;margin:0 0 24px}
+@media(max-width:820px){.hero h1{font-size:50px}.hero{padding-top:70px}}
+.hero .lede{font-size:20px;line-height:1.5;font-weight:400;color:var(--ink2);max-width:600px;margin:0 auto;letter-spacing:-.012em}
+@media(max-width:820px){.hero .lede{font-size:17px}}
+.hero .meta{margin-top:30px;font-size:12.5px;color:var(--ink3);letter-spacing:.02em}
+.hero .meta b{color:var(--ink2);font-weight:600}
+
+.stats{display:flex;justify-content:center;gap:0;margin:70px auto 0;max-width:760px;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.stat{flex:1;padding:26px 14px;text-align:center;border-left:1px solid var(--hair)}
+.stat:first-child{border-left:none}
+.stat b{display:block;font-size:26px;font-weight:700;letter-spacing:-.03em;color:var(--ink)}
+.stat span{display:block;font-size:11.5px;color:var(--ink3);margin-top:5px;line-height:1.35}
+@media(max-width:700px){.stat b{font-size:19px}.stat{padding:18px 8px}}
+
+.fb{max-width:760px;margin:0 auto;padding:30px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:26px;text-align:left}
+@media(max-width:700px){.fb{grid-template-columns:1fr;gap:20px;padding-top:24px}}
+.fb-k{grid-column:1/-1;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink3);text-align:center;margin-bottom:-6px}
+.fb-i{display:flex;gap:12px;align-items:flex-start}
+.fb-i .tick{width:18px;height:18px;flex:none;margin-top:3px;border-radius:50%;background:rgba(6,150,215,.22);
+  display:grid;place-items:center}
+.fb-i .tick svg{width:10px;height:10px;stroke:var(--accent-lift);stroke-width:3;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+.fb-i p{font-size:14px;line-height:1.55;color:var(--ink2);margin:0}
+.fb-i p b{color:var(--ink);font-weight:700}
+
+.sec{padding:96px 0}
+.sec-k{font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px}
+.sec h2{font-size:38px;line-height:1.14;font-weight:700;letter-spacing:-.035em;margin:0 0 20px;max-width:680px}
+@media(max-width:820px){.sec h2{font-size:29px}.sec{padding:64px 0}}
+.sec p.body{font-size:17px;line-height:1.66;color:var(--ink2);max-width:640px;margin:0 0 18px;letter-spacing:-.008em}
+.sec p.body b{color:var(--ink);font-weight:600}
+.rule{height:1px;background:var(--hair);margin:0}
+
+.notes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px;max-width:820px}
+@media(max-width:760px){.notes{grid-template-columns:1fr}}
+.note{background:var(--surf);border:1px solid var(--hair);box-shadow:0 2px 10px rgba(0,0,0,.12);border-radius:16px;padding:24px 26px}
+.note h4{font-size:15px;font-weight:700;letter-spacing:-.015em;margin:0 0 8px}
+.note p{font-size:14px;line-height:1.6;color:var(--ink2);margin:0}
+
+.ideas{display:flex;flex-direction:column;gap:0;margin-top:14px;border-top:1px solid var(--hair)}
+.idea{display:grid;grid-template-columns:52px 1fr 180px;gap:26px;align-items:start;
+  padding:30px 4px;border-bottom:1px solid var(--hair);text-align:left;width:100%;transition:.18s}
+.idea:hover{background:rgba(255,255,255,.04)}
+@media(max-width:780px){.idea{grid-template-columns:38px 1fr;gap:16px}}
+.idea .no{font-size:13px;font-weight:700;color:var(--ink3);padding-top:4px;letter-spacing:.02em}
+.idea h3{font-size:21px;line-height:1.25;font-weight:700;letter-spacing:-.024em;margin:0 0 7px}
+@media(max-width:820px){.idea h3{font-size:18px}}
+.idea p{font-size:14.5px;line-height:1.6;color:var(--ink2);margin:0;max-width:540px}
+.idea .out{text-align:right;padding-top:3px}
+@media(max-width:780px){.idea .out{grid-column:2;text-align:left;padding-top:12px}}
+.idea .out b{display:block;font-size:19px;font-weight:700;letter-spacing:-.025em;color:var(--accent-lift);white-space:nowrap}
+.idea .out span{display:block;font-size:10.5px;color:var(--ink3);margin-top:3px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.idea .seeit{display:inline-flex;align-items:center;gap:5px;margin-top:11px;font-size:12.5px;
+  font-weight:600;color:var(--accent-lift)}
+.idea .seeit svg{width:12px;height:12px}
+
+.band{background:var(--surf);border:1px solid var(--hair);border-radius:28px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:40px 44px;margin-top:44px;
+  display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+@media(max-width:700px){.band{padding:28px 24px;gap:22px}}
+.band .lab{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.band .txt{flex:1;min-width:240px}
+.band .txt p{font-size:15.5px;line-height:1.6;color:var(--ink2);margin:0}
+.band .nums{display:flex;gap:34px}
+.band .nums div b{display:block;font-size:30px;font-weight:700;letter-spacing:-.035em;color:var(--accent-lift)}
+.band .nums div span{display:block;font-size:11px;color:var(--ink3);margin-top:2px;letter-spacing:.04em;
+  text-transform:uppercase;font-weight:600}
+
+.cta-row{display:flex;justify-content:center;margin-top:52px;align-items:center;gap:22px;flex-wrap:wrap}
+.bigbtn{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#fff;
+  font-size:15px;font-weight:700;letter-spacing:-.01em;padding:15px 26px;border-radius:30px;transition:.16s}
+.bigbtn:hover{filter:brightness(1.1)}
+.bigbtn svg{width:15px;height:15px}
+
+.foot{border-top:1px solid var(--hair);padding:36px 0 70px;font-size:12.5px;line-height:1.6;color:var(--ink3)}
+
+/* ============ prototype stage ============ */
+.stage{display:grid;grid-template-columns:minmax(440px,1fr) minmax(400px,470px);gap:0;
+  align-items:start;min-height:calc(100vh - 58px)}
+@media(max-width:1080px){.stage{grid-template-columns:1fr}}
+.phonecol{padding:34px 24px 46px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.panelcol{border-left:1px solid var(--hair);background:var(--panel);color:var(--panel-ink);
+  min-height:calc(100vh - 58px);position:sticky;top:58px;max-height:calc(100vh - 58px);overflow-y:auto}
+@media(max-width:1080px){.panelcol{position:static;max-height:none;border-left:none;border-top:1px solid var(--hair)}}
+
+.phone{position:relative;width:390px;height:844px;flex:none;background:#000;border:11px solid #000;
+  border-radius:46px;box-shadow:0 0 0 1.5px rgba(255,255,255,.14),0 34px 70px -22px rgba(0,0,0,.6)}
+.phone-in{position:absolute;inset:0;border-radius:36px;overflow:hidden;background:var(--ac-bg);color-scheme:only light}
+.island{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:104px;height:30px;background:#000;
+  border-radius:16px;z-index:60;pointer-events:none}
+.sbar{position:absolute;top:0;left:0;right:0;height:50px;z-index:55;pointer-events:none;display:flex;
+  align-items:center;justify-content:space-between;padding:14px 28px 0 34px;font:600 15px/1 -apple-system,'Noto Sans',sans-serif;color:#111;transition:color .3s}
+.sbar.light{color:#fff}
+.sbar .glyphs{display:flex;gap:5px;align-items:center}
+.homebar{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:134px;height:5px;
+  border-radius:3px;background:#111;z-index:56;pointer-events:none;transition:background .3s}
+.homebar.light{background:rgba(255,255,255,.9)}
+.screenwrap{position:absolute;inset:0;overflow:hidden;background:var(--ac-bg)}
+
+/* ============ phone screens — AutoCAD's system, all prefixed scr-/ac- ============ */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--ac-bg);color:var(--ac-ink);
+  font-family:'Noto Sans','Noto Sans JP',-apple-system,sans-serif;letter-spacing:.01em;
+  transform:translateX(100%);transition:transform .36s cubic-bezier(.32,.72,0,1);z-index:10;will-change:transform}
+.scr.is-active{transform:translateX(0);z-index:20}
+.scr.is-past{transform:translateX(-24%)}
+.scr.sheet{transform:translateY(100%)}
+.scr.sheet.is-active{transform:translateY(0);z-index:30}
+.scr.nofx{transition:none}
+.scr-top{flex:none;padding:50px 0 0;position:relative;z-index:2}
+.scr-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:0 26px;scrollbar-width:none;position:relative;z-index:2}
+.scr-body::-webkit-scrollbar{display:none}
+.scr-foot{flex:none;padding:12px 26px 30px;position:relative;z-index:2;background:var(--ac-bg)}
+
+/* their header: centered lockup, thin X / chevron, hairline */
+.ac-head{position:relative;height:52px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--ac-hair)}
+.ac-lock{display:flex;align-items:center;gap:8px}
+.ac-lock svg{width:27px;height:27px;display:block}
+.ac-lock .w{font:700 13px/1 'Noto Sans',sans-serif;letter-spacing:.01em;color:var(--ac-ink)}
+.ac-lock .w span{font-weight:500;margin-left:4px}
+.ac-x,.ac-bk{position:absolute;top:6px;width:40px;height:40px;display:grid;place-items:center;color:var(--ac-ink)}
+.ac-x{right:12px}.ac-bk{left:10px}
+.ac-x svg,.ac-bk svg{width:20px;height:20px}
+.ac-prog{position:absolute;left:0;bottom:-1px;height:2px;background:var(--ac-blue);transition:width .4s cubic-bezier(.32,.72,0,1)}
+.ac-h{font:400 25px/1.3 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em;text-align:center;margin:26px 0 0;color:var(--ac-ink)}
+.ac-sub{font:400 14.5px/1.5 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em;color:var(--ac-txt);text-align:center;margin:8px 0 0}
+.ac-btn{display:flex;align-items:center;justify-content:center;width:100%;height:46px;border-radius:var(--r-ctl);background:var(--ac-blue);color:#fff;
+  font:400 16px/1 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.04em;transition:filter .15s}
+.ac-btn:hover{filter:brightness(1.07)}
+.ac-btn[disabled]{background:#3A5F78;color:#9FB3C2;cursor:default}
+.ac-out{display:flex;align-items:center;justify-content:center;width:100%;height:46px;margin-top:12px;border-radius:var(--r-ctl);border:1px solid #11141A;
+  font:400 16px/1 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.04em;color:var(--ac-ink)}
+.ac-helper{font-size:12.5px;line-height:1.45;color:var(--ac-muted);text-align:center;margin:0 0 10px;letter-spacing:.02em}
+.ac-helper b{color:var(--ac-txt);font-weight:600}
+
+/* welcome */
+.scr--welcome .scr-body{padding:0}
+.ac-hero{height:410px;background:#000 url(img/welcome-hero.png) center 30%/cover no-repeat}
+.ac-wel{padding:30px 34px 0}
+.ac-wlock{display:flex;align-items:center;gap:10px}
+.ac-wlock svg{width:42px;height:42px;flex:none}
+.ac-wlock div{font:700 17px/1.05 'Noto Sans',sans-serif;letter-spacing:.01em}
+.ac-wlock div span{display:block;font-weight:500;font-size:16.5px;margin-top:2px}
+.ac-tag{font:400 18px/1.35 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.03em;margin-top:30px}
+.scr--welcome .scr-foot{padding:0 34px 34px}
+.ac-signin{font-size:12.5px;line-height:1.45;color:var(--ac-muted);text-align:center;margin-top:12px;letter-spacing:.02em}
+
+/* option rows — their card surface, square corners */
+.ac-rows{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.ac-row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--ac-card);border:1.5px solid transparent;
+  border-radius:var(--r-ctl);padding:14px 14px;font:400 15px/1.3 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em;color:var(--ac-ink);transition:.16s}
+.ac-row small{display:block;font-size:12.5px;color:var(--ac-txt);opacity:.8;margin-top:3px}
+.ac-row.on{border-color:var(--ac-sel);background:#3E5470}
+.ac-ic{width:34px;height:34px;flex:none;border-radius:var(--r-ctl);background:var(--ac-lav);display:grid;place-items:center}
+.ac-ic svg{width:20px;height:20px;stroke:#2E3341;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ac-ck{width:22px;height:22px;flex:none;margin-left:auto;border-radius:50%;border:1.5px solid #7C8696;display:grid;place-items:center;transition:.16s}
+.ac-ck.sq{border-radius:3px}
+.ac-ck svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.ac-row.on .ac-ck{background:var(--ac-blue);border-color:var(--ac-blue)}
+.ac-row.on .ac-ck svg{opacity:1}
+/* storage tiles */
+.ac-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.ac-tile{position:relative;height:66px;display:flex;align-items:center;gap:10px;padding:0 12px;background:var(--ac-card);border:1.5px solid transparent;
+  border-radius:var(--r-ctl);text-align:left;font:400 13.5px/1.25 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em;color:var(--ac-ink);transition:.16s}
+.ac-tile.wide{grid-column:1/-1}
+.ac-tile svg{width:22px;height:22px;flex:none;stroke:var(--ac-lav);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ac-tile.on{border-color:var(--ac-sel);background:#3E5470}
+.ac-tile .tk{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:var(--ac-blue);display:grid;place-items:center;opacity:0;transition:.16s}
+.ac-tile .tk svg{width:10px;height:10px;stroke:#fff;stroke-width:3.4}
+.ac-tile.on .tk{opacity:1}
+
+/* tablet illustration (their art: lavender device, shaded block behind) */
+.ac-art{display:block;width:150px;height:96px;margin:0 auto}
+
+/* loader */
+.ac-loadwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:10px 0 20px}
+.ac-spin{width:76px;height:76px;margin:22px 0 22px;animation:spin 1.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ac-load-h{font:400 22px/1.3 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em;text-align:center;margin:0 0 22px}
+.ac-lsteps{width:100%;display:flex;flex-direction:column;gap:13px;margin-bottom:26px}
+.ac-ls{display:flex;align-items:center;gap:11px;font-size:14px;line-height:1.35;color:rgba(255,255,255,.45);transition:.35s;letter-spacing:.02em}
+.ac-ls.on{color:#fff}
+.ac-ls .d{width:20px;height:20px;flex:none;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);display:grid;place-items:center;transition:.35s}
+.ac-ls.on .d{background:var(--ac-blue);border-color:var(--ac-blue)}
+.ac-ls .d svg{width:11px;height:11px;stroke:#fff;stroke-width:3.2;fill:none;opacity:0;stroke-linecap:round;stroke-linejoin:round}
+.ac-ls.on .d svg{opacity:1}
+.ac-proof{width:100%;background:var(--ac-card);border-radius:var(--r-media);padding:14px 16px;display:flex;align-items:center;gap:14px}
+.ac-proof b{font:500 30px/1 'Noto Sans',sans-serif}
+.ac-proof .st{color:#F4B400;font-size:14px;letter-spacing:2px}
+.ac-proof span{display:block;font-size:12.5px;color:var(--ac-txt);margin-top:3px;letter-spacing:.02em}
+
+/* payoff */
+.ac-card{background:var(--ac-card);border-radius:var(--r-media);padding:13px 15px;margin-top:9px}
+.ac-k{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ac-muted)}
+.ac-v{font-size:15px;line-height:1.4;margin-top:5px;letter-spacing:.02em}
+.ac-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.ac-chip{height:32px;padding:0 12px;border-radius:16px;border:1px solid #6B7688;font:400 13px/1 'Noto Sans','Noto Sans JP',sans-serif;color:var(--ac-txt);display:flex;align-items:center;gap:6px;letter-spacing:.02em}
+.ac-chip.on{background:var(--ac-blue);border-color:var(--ac-blue);color:#fff}
+.ac-chip svg{width:12px;height:12px;stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ac-dates{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.ac-dates div{border-left:2px solid var(--ac-blue);padding-left:10px}
+.ac-dates b{display:block;font:500 16px/1.25 'Noto Sans','Noto Sans JP',sans-serif}
+.ac-dates span{display:block;font-size:12px;color:var(--ac-txt);margin-top:2px;letter-spacing:.02em}
+.ac-note{font-size:12.5px;line-height:1.5;color:var(--ac-txt);margin-top:10px;letter-spacing:.02em}
+.ac-note b{color:var(--ac-link);font-weight:400}
+
+/* paywall — their stacked cards, compressed */
+.scr--pay .scr-body{padding:0 22px}
+.ac-payh{font:400 24px/1.28 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em;text-align:center;margin:12px 4px 0}
+.ac-stars{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:5px;font-size:13px;color:var(--ac-txt);letter-spacing:.02em}
+.ac-stars i{font-style:normal;color:#F4B400;letter-spacing:1px}
+.ac-pcard{position:relative;display:block;width:100%;text-align:center;background:var(--ac-card);border:2px solid transparent;border-radius:var(--r-media);
+  margin-top:40px;padding:35px 16px 11px;transition:.16s;color:var(--ac-ink)}
+.ac-pcard .ac-art{position:absolute;top:-38px;left:50%;transform:translateX(-50%);width:110px;height:70px}
+.ac-pcard.on{border-color:var(--ac-sel)}
+.ac-pn{font:500 15px/1.2 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em}
+.ac-pt{font:400 27px/1.15 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.01em;margin-top:4px}
+.ac-nocard{font-size:14px;color:var(--ac-link);margin-top:4px;letter-spacing:.03em}
+.ac-tl{display:flex;flex-direction:column;gap:0;margin:10px 4px 0;text-align:left}
+.ac-tli{position:relative;display:flex;gap:11px;padding-bottom:7px}
+.ac-tli:last-child{padding-bottom:0}
+.ac-tli::before{content:'';position:absolute;left:5px;top:13px;bottom:-1px;width:2px;background:#5A667A}
+.ac-tli:last-child::before{display:none}
+.ac-tli i{width:12px;height:12px;flex:none;border-radius:50%;background:var(--ac-blue);margin-top:4px;position:relative;z-index:1}
+.ac-tli:nth-child(2) i{background:var(--ac-lav)}
+.ac-tli:nth-child(3) i{background:#7C8696}
+.ac-tli b{display:block;font:500 13.5px/1.3 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em}
+.ac-tli span{display:block;font-size:12px;line-height:1.35;color:var(--ac-txt);letter-spacing:.02em}
+.ac-or{font:400 15px/1 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.04em;text-align:center;margin:11px 0 11px}
+.ac-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ac-plan{position:relative;display:block;text-align:left;background:var(--ac-card);border:2px solid transparent;border-radius:var(--r-media);padding:13px 12px 11px;color:var(--ac-ink);transition:.16s}
+.ac-plan.on{border-color:var(--ac-sel)}
+.ac-plan .n{display:block;font-size:12.5px;letter-spacing:.03em;color:var(--ac-txt)}
+.ac-plan .p{display:flex;align-items:baseline;gap:4px;margin-top:4px;white-space:nowrap}
+.ac-plan .p small{font-size:11px;color:var(--ac-txt)}
+.ac-plan .p b{font:400 22px/1 'Noto Sans',sans-serif}
+.ac-plan .s{display:block;font-size:11.5px;color:var(--ac-txt);margin-top:5px;letter-spacing:.02em;line-height:1.3}
+.ac-plan .s em{font-style:normal;color:var(--ac-link)}
+.ac-badge{position:absolute;top:-10px;right:8px;background:var(--ac-blue);color:#fff;font:500 10.5px/1 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.06em;
+  padding:4px 7px;border-radius:2px;text-transform:uppercase}
+.ac-incl{font-size:11.5px;line-height:1.4;color:var(--ac-muted);text-align:center;margin:10px 4px 2px;letter-spacing:.02em}
+.ac-incl b{color:var(--ac-link);font-weight:400}
+.scr--pay .scr-foot{padding:9px 22px 22px;border-top:1px solid var(--ac-hair)}
+.ac-trust{font-size:12.5px;color:var(--ac-txt);text-align:center;margin:0 0 9px;letter-spacing:.02em}
+.ac-legal{display:flex;justify-content:center;gap:18px;margin-top:10px}
+.ac-legal a{font-size:11.5px;color:var(--ac-muted);text-decoration:none;letter-spacing:.02em}
+
+/* offer — comparison, monthly, no trial */
+.ac-oh{font:400 25px/1.3 'Noto Sans','Noto Sans JP',sans-serif;letter-spacing:.02em;text-align:center;margin:20px 0 0}
+.ac-os{font-size:14px;line-height:1.5;color:var(--ac-txt);text-align:center;margin-top:8px;letter-spacing:.02em}
+.ac-cmp{margin-top:20px;background:var(--ac-card);border-radius:var(--r-media);overflow:hidden}
+.ac-cmp .r{display:grid;grid-template-columns:1fr 74px 84px;align-items:center;border-top:1px solid rgba(255,255,255,.08);min-height:44px}
+.ac-cmp .r:first-child{border-top:none;min-height:52px}
+.ac-cmp .r>span{padding:8px 12px;font-size:13px;line-height:1.3;letter-spacing:.02em}
+.ac-cmp .r>span+span{text-align:center;padding:8px 4px}
+.ac-cmp .h span{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ac-txt)}
+.ac-cmp .r>span:last-child{background:rgba(6,150,215,.14);align-self:stretch;display:flex;align-items:center;justify-content:center}
+.ac-cmp .h>span:last-child{background:var(--ac-blue);color:#fff}
+.ac-cmp svg{width:16px;height:16px;stroke:var(--ac-link);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ac-cmp .no{color:#6F7A8B;font-size:16px}
+.ac-ofine{font-size:11.5px;color:var(--ac-muted);margin-top:8px;letter-spacing:.02em;line-height:1.4}
+.ac-mo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;background:var(--ac-card);border:2px solid var(--ac-sel);border-radius:var(--r-media);padding:14px 16px}
+.ac-mo .n{font-size:14px;letter-spacing:.02em}
+.ac-mo .n small{display:block;font-size:12px;color:var(--ac-txt);margin-top:2px}
+.ac-mo .p{display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.ac-mo .p small{font-size:11.5px;color:var(--ac-txt)}
+.ac-mo .p b{font:400 26px/1 'Noto Sans',sans-serif}
+.ac-ghost{display:block;width:100%;height:36px;margin-top:6px;font:400 14px/1 'Noto Sans','Noto Sans JP',sans-serif;color:var(--ac-link);letter-spacing:.03em}
+
+/* account — Autodesk's own web sheet (always white, like the real one) */
+.scr--acct{background:#000}
+.ac-web{position:absolute;left:0;right:0;top:56px;bottom:0;background:#fff;border-radius:22px 22px 0 0;display:flex;flex-direction:column;color:#000;
+  font-family:'Noto Sans','Noto Sans JP',sans-serif}
+.ac-wbar{flex:none;height:64px;display:flex;align-items:center;justify-content:center;position:relative}
+.ac-wbar b{font:600 15px/1 -apple-system,'Noto Sans',sans-serif;letter-spacing:0}
+.ac-wbar .c{position:absolute;left:14px;top:12px;width:40px;height:40px;border-radius:50%;background:#444;display:grid;place-items:center;color:#fff}
+.ac-wbar .c svg{width:18px;height:18px}
+.ac-wbody{flex:1;min-height:0;overflow-y:auto;padding:0 18px;scrollbar-width:none}
+.ac-wbody::-webkit-scrollbar{display:none}
+.ac-wlogo{display:block;height:20px;width:auto;margin:14px 0 18px}
+.ac-wrule{height:1px;background:#DDD;margin:0 -18px}
+.ac-wh{font:700 21px/1.2 'Noto Sans','Noto Sans JP',sans-serif;margin:22px 0 0;letter-spacing:0}
+.ac-wp{font-size:14.5px;line-height:1.55;color:#222;margin-top:10px}
+.ac-wctx{margin-top:14px;background:#F2F6F9;border-left:3px solid var(--ac-blue);padding:10px 12px;font-size:13px;line-height:1.45;color:#222}
+.ac-wctx b{font-weight:600}
+.ac-wck{display:flex;gap:10px;margin-top:16px;font-size:13px;line-height:1.5;color:#333;text-align:left;width:100%}
+.ac-wck i{width:18px;height:18px;flex:none;border:1.5px solid #222;border-radius:2px;margin-top:2px;display:grid;place-items:center}
+.ac-wck i svg{width:12px;height:12px;stroke:#fff;stroke-width:3.2;fill:none;opacity:0}
+.ac-wck.on i{background:#000}
+.ac-wck.on i svg{opacity:1}
+.ac-wck u{text-underline-offset:2px}
+.ac-wfoot{flex:none;padding:12px 18px 30px}
+.ac-wbtn{display:flex;align-items:center;justify-content:center;width:100%;height:46px;border-radius:3px;background:#000;color:#fff;font:400 16px/1 'Noto Sans','Noto Sans JP',sans-serif}
+.ac-wbtn[disabled]{background:#BDBDBD}
+
+/* light mode — an approximation: AutoCAD mobile ships dark, no light frames were supplied */
+.phone-in.light{--ac-bg:#F3F5F7;--ac-card:#FFFFFF;--ac-hair:#DCE0E5;--ac-ink:#1F2430;--ac-txt:#3C4350;--ac-muted:#6B7380;--ac-link:#0477AD;--ac-shade:#CBD2DD;background:var(--ac-bg)}
+.phone-in.light .screenwrap{background:var(--ac-bg)}
+.phone-in.light .ac-row,.phone-in.light .ac-tile,.phone-in.light .ac-pcard,.phone-in.light .ac-plan,.phone-in.light .ac-card,
+.phone-in.light .ac-proof,.phone-in.light .ac-cmp,.phone-in.light .ac-mo{box-shadow:0 1px 4px rgba(31,36,48,.08)}
+.phone-in.light .ac-row.on,.phone-in.light .ac-tile.on{background:#E3F2FA}
+.phone-in.light .ac-ck{border-color:#A8B0BC}
+.phone-in.light .ac-out{border-color:#1F2430}
+.phone-in.light .ac-chip{border-color:#B8C0CB}
+.phone-in.light .ac-chip.on{color:#fff}
+.phone-in.light .ac-ls{color:rgba(31,36,48,.4)}
+.phone-in.light .ac-ls.on{color:#1F2430}
+.phone-in.light .ac-ls .d{border-color:rgba(31,36,48,.3)}
+.phone-in.light .ac-tli::before{background:#C6CDD7}
+.phone-in.light .ac-cmp .r{border-top-color:#E6E9ED}
+.phone-in.light .ac-cmp .no{color:#A8B0BC}
+.phone-in.light .ac-btn[disabled]{background:#A9D3EA;color:#fff}
+.phone-in.light .ac-wel{background:var(--ac-bg)}
+.phone-in.light .ac-lock .w,.phone-in.light .ac-wlock div{color:#1F2430}
+
+/* prototype toolbar, walkthrough, QR */
+.tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:520px}
+.seg{display:inline-flex;align-items:center;background:#384050;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:3px;gap:2px}
+.seg button{padding:6px 11px;border-radius:16px;font:600 12px/1 'Plus Jakarta Sans',sans-serif;color:var(--ink2);transition:.14s}
+.seg button.on{background:#fff;color:#1F2430}
+.demo-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:20px;background:var(--accent);color:#fff;
+  font:700 12px/1 'Plus Jakarta Sans',sans-serif}
+.demo-cap{width:390px;max-width:calc(100vw - 24px);background:#384050;border:1px solid var(--hair2);border-radius:16px;padding:14px 14px 12px;
+  display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.demo-cap .bar{position:absolute;left:0;top:0;right:0;height:3px;background:rgba(255,255,255,.08)}
+.demo-cap .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
+.demo-cap p{flex:1;font-size:13.5px;line-height:1.45;color:var(--ink);margin:0;font-weight:500}
+.demo-cap button{font:700 12px/1 'Plus Jakarta Sans',sans-serif;color:var(--ink2);padding:7px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.18);flex:none}
+.finger{position:absolute;z-index:90;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.28);
+  border:2px solid rgba(255,255,255,.95);box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none;opacity:0;left:50%;top:60%;
+  transition:left .32s cubic-bezier(.4,0,.2,1),top .32s cubic-bezier(.4,0,.2,1),opacity .2s,transform .15s}
+.finger.show{opacity:1}
+.finger.press{transform:scale(.78);background:rgba(255,255,255,.45)}
+.qr{display:flex;align-items:center;gap:12px;background:#384050;border:1px solid var(--hair);border-radius:16px;padding:10px 16px 10px 10px;text-align:left}
+.qr img{width:123px;height:123px;display:block;image-rendering:pixelated;border-radius:6px}
+.qr span{font-size:12.5px;line-height:1.45;color:var(--ink2)}
+.qr b{display:block;color:var(--ink);font-size:13.5px}
+@media(max-width:1080px){.qr{display:none}}
+
+#view-proto .tools{order:0} #view-proto .demo-cap{order:1} #view-proto .phone{order:2} #view-proto .chips{order:3}
+#view-proto .chiphint{order:4} #view-proto .qr{order:5}
+.cta-row .qr{order:2}
+/* on a phone: the prototype is the screen */
+@media(max-width:500px){
+  #view-proto .phonecol{padding:0 0 28px;gap:14px}
+  #view-proto .phone{width:100vw;height:calc(100svh - 58px);min-height:640px;border:0;border-radius:0;box-shadow:none;order:1}
+  #view-proto .phone-in{border-radius:0}
+  #view-proto .island,#view-proto .sbar,#view-proto .homebar{display:none}
+  #view-proto .scr-top{padding-top:4px}
+  #view-proto .scr-foot{padding-bottom:18px}
+  #view-proto .ac-hero{height:340px}
+  #view-proto .ac-web{top:10px}
+  #view-proto .tools{order:3;padding:0 12px}
+  #view-proto .demo-cap{position:fixed;left:12px;right:12px;bottom:12px;width:auto;max-width:none;z-index:95}
+  #view-proto .chips{order:4;padding:0 12px}
+  #view-proto .chiphint{order:5}
+}
+
+/* overview: walkthrough button */
+.herobtns{display:flex;justify-content:center;margin-top:30px}
+.ghostbtn{display:inline-flex;align-items:center;gap:10px;background:#384050;border:1px solid var(--hair2);color:var(--ink);font-size:14px;
+  font-weight:700;padding:9px 20px 9px 9px;border-radius:30px;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:.16s}
+.ghostbtn:hover{background:#40495A}
+.ghostbtn .pl{width:30px;height:30px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+.ghostbtn .pl svg{width:12px;height:12px;fill:#fff;margin-left:2px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:470px;margin:0 auto}
+.chip{padding:7px 13px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:#384050;
+  font:600 12px/1 'Plus Jakarta Sans',sans-serif;color:var(--ink2);transition:.14s}
+.chip:hover{color:var(--ink);border-color:rgba(255,255,255,.3)}
+.chip.offer{border-style:dashed;border-color:var(--accent-lift);color:var(--accent-lift)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff;border-style:solid}
+.chiphint{text-align:center;font-size:11px;color:var(--ink3);margin:0;max-width:430px}
+
+/* ============ the short panel ============ */
+.pn{padding:30px 30px 60px}
+.pn-n{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.pn-n.ctx{color:var(--panel-muted)}
+.pn-t{font-size:23px;line-height:1.18;font-weight:700;letter-spacing:-.028em;margin:8px 0 0;color:var(--panel-ink)}
+.pn-hyp{font-size:15px;line-height:1.62;color:#2E353B;margin:16px 0 0}
+.pn-hyp b{font-weight:700;color:var(--panel-ink)}
+.pn-out{margin-top:22px;border-top:1px solid var(--panel-line);padding-top:18px}
+.pn-out .lab{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--panel-muted)}
+.pn-out .v{font-size:31px;font-weight:700;letter-spacing:-.035em;color:var(--accent-ink);margin-top:7px;line-height:1}
+.pn-kept{margin-top:22px;font-size:12.5px;line-height:1.55;color:var(--panel-muted)}
+.pn-kept b{color:#2E353B;font-weight:700}
+.pn-foot{font-size:11.5px;line-height:1.55;color:var(--panel-muted);border-top:1px solid var(--panel-line);
+  padding-top:14px;margin-top:26px}
+.pn-sep{height:1px;background:var(--panel-line);margin:26px 0}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="acIcon" viewBox="0 0 100 100">
+      <path d="M12 20h86v76H24L12 84z" fill="#7C0629"/>
+      <rect x="4" y="8" width="86" height="72" fill="#E51051"/>
+      <rect x="4" y="8" width="7" height="72" fill="#E75781"/>
+      <path fill="#fff" fill-rule="evenodd" d="M38 64 47 25h10l9 39h-8l-2-9H46l-2 9zm10-16h7l-3.5-15z"/>
+    </symbol>
+    <symbol id="acArt" viewBox="0 0 150 96">
+      <rect x="44" y="12" width="98" height="78" fill="var(--ac-shade)"/>
+      <rect x="28" y="2" width="100" height="74" rx="3" fill="#A3B5DF" stroke="#2E3341" stroke-width="2"/>
+      <rect x="104" y="4" width="22" height="70" fill="#8FA2D3"/>
+      <circle cx="115" cy="39" r="3" fill="none" stroke="#2E3341" stroke-width="1.6"/>
+      <path d="M48 40 66 24l18 16M53 36v20h26V36M62 56V46h8v10M74 30v-5h4v8" fill="none" stroke="#2E3341" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M8 90 30 68l6 6-22 22-8 2z" fill="#A3B5DF" stroke="#2E3341" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="nav">
+  <div class="nav-in">
+    <div class="nav-brand">
+      <span class="mk"><svg viewBox="0 0 100 100" aria-label="AutoCAD"><use href="#acIcon"/></svg></span>
+      <b>Growth Audit</b><span>· AutoCAD</span>
+    </div>
+    <div class="nav-links">
+      <button class="on" data-view="over">Overview</button>
+      <button data-view="proto">Prototype</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= OVERVIEW ======================= -->
+<div class="view on" id="view-over">
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Growth Audit · October 2026</div>
+    <h1>AutoCAD</h1>
+    <p class="lede">Five ideas to unlock more revenue from the traffic you already have.</p>
+    <div class="meta">Prepared by <b>Adapty</b> · based on your live iOS flow and your App Store listing</div>
+    <div class="herobtns"><button class="ghostbtn" data-demo><span class="pl"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg></span>Watch the 30-second walkthrough</button></div>
+    <div class="stats">
+      <div class="stat"><b>30,000+</b><span>apps run subscriptions<br>on Adapty</span></div>
+      <div class="stat"><b>5</b><span>ideas, each rebuilt<br>as a working screen</span></div>
+      <div class="stat"><b>0</b><span>design changes<br>to your art direction</span></div>
+    </div>
+
+    <div class="fb">
+      <div class="fb-k">Built in Adapty Flow Builder</div>
+      <div class="fb-i">
+        <span class="tick"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <p><b>Millions of dollars</b> in subscription revenue pass through Flow Builder every month.</p>
+      </div>
+      <div class="fb-i">
+        <span class="tick"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <p><b>Nearly 500 apps</b> actively build their paywalls and onboarding in it — plenty of them past $100K MRR.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="wrap">
+    <div class="sec-k">What this is</div>
+    <h2>We opened AutoCAD on a phone the way a new user does, then rebuilt the parts we think are leaving money on the table.</h2>
+    <p class="body">Adapty powers subscriptions for <b>30,000+ apps</b>, so we get to see what actually moves conversion and revenue across the market rather than inside one app. We pointed that at the AutoCAD app: installed it, went through the first screens, read your App Store listing and your AutoCAD Web pages, and looked for gaps between what you already have and what you currently show people.</p>
+    <p class="body">What follows is five ideas — not fifteen. Each one is a hypothesis you can A/B test, and each one is built into a clickable prototype so you can see it rather than imagine it. <b>The prototype uses your design, not ours.</b></p>
+
+    <div class="notes">
+      <div class="note">
+        <h4>We did not redesign your app</h4>
+        <p>Every screen in the prototype is yours — your dark surfaces, your square-cornered cards and buttons, the lavender tablet illustration, your stacked plan cards and your Autodesk sign-in. Only the order changed, plus a few things you already own but do not show at the right moment.</p>
+      </div>
+      <div class="note">
+        <h4>You may have tested some of this</h4>
+        <p>We are working from the outside, so we cannot see your experiment history. If one of these is something you have already run, tell us — we will go deeper on the rest rather than repeat it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<div class="sec">
+  <div class="wrap">
+    <div class="sec-k">The five ideas</div>
+    <h2>Ranked by what we would test first.</h2>
+    <p class="body">Each one links straight to the screen in the prototype.</p>
+
+    <div class="ideas">
+      <button class="idea" data-jump="offer">
+        <span class="no">01</span>
+        <span>
+          <h3>Make closing the paywall a second chance, not a sign-out</h3>
+          <p>Today the X on the paywall asks “Sure you want to sign out?”. Someone who just made an Autodesk account is one tap from leaving with nothing. Show them a straight monthly plan at EUR 11.68 instead, next to what the free view-only plan does not do.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>ARPU +10–15%</b><span>second chance</span></span>
+      </button>
+
+      <button class="idea" data-jump="welcome">
+        <span class="no">02</span>
+        <span>
+          <h3>Let people in before you ask for an account</h3>
+          <p>A new install offers two doors, Sign In or Create Account, and both open the Autodesk web sign-in with a terms checkbox. The paywall only appears after that. Keep Sign In for your desktop subscribers and ask everyone else for an account once they have chosen a plan.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>CR +8%</b><span>ARPU +17%</span></span>
+      </button>
+
+      <button class="idea" data-jump="paywall">
+        <span class="no">03</span>
+        <span>
+          <h3>Name their work on the paywall and show both plans up top</h3>
+          <p>“Work From Anywhere With AutoCAD” says the same thing to an architect and a site engineer. And the yearly plan sits two screens down, its EUR 116.79 never shown as two months free against twelve at EUR 11.68.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>CR +15–20%</b><span>to purchase</span></span>
+      </button>
+
+      <button class="idea" data-jump="payoff">
+        <span class="no">04</span>
+        <span>
+          <h3>Ask three questions, then show the setup they unlock</h3>
+          <p>What they work on, what they will do on the phone, and where their DWGs live. Read the answers back while it sets up, then show their tools, their storage and the exact date their 30 days run to.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>CR +10–15%</b><span>to purchase</span></span>
+      </button>
+
+      <button class="idea" data-jump="paywall">
+        <span class="no">05</span>
+        <span>
+          <h3>Put your 4.4 and the trial dates beside the button</h3>
+          <p>Your 4.4 from 6.3K App Store ratings appears nowhere in the flow. And “No credit card required” never says what happens on day 30 — the free view-only plan is only explained in small print at the bottom of the screen.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>CR +10–15%</b><span>to purchase</span></span>
+      </button>
+    </div>
+
+    <div class="band">
+      <div class="txt">
+        <div class="lab">Potential outcome</div>
+        <p>Run together, these five move the same funnel at three points — when the account is asked for, what the paywall says, and what happens when someone says no.</p>
+      </div>
+      <div class="nums">
+        <div><b>+25%</b><span>CR to purchase</span></div>
+        <div><b>+30%</b><span>Revenue, up to</span></div>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <div class="qr"><img src="img/qr.svg" alt="QR code for the prototype"><span><b>Or open it on your phone</b>Scan to try the flow in your hand.</span></div>
+      <button class="bigbtn" data-view="proto">Open the prototype
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="foot">
+  <div class="wrap">
+    Impact ranges are Adapty's expected effect from teardowns and A/B tests across subscription apps — not measured lift for AutoCAD. Every price, rating and feature line here and in the prototype comes from Autodesk's own App Store listing, AutoCAD Web pages and in-app screens.
+  </div>
+</div>
+</div><!-- /view-over -->
+
+<!-- ======================= PROTOTYPE ======================= -->
+<div class="view" id="view-proto">
+<div class="stage">
+  <div class="phonecol">
+    <div class="tools" id="tools">
+      <div class="seg" id="segLang"><button data-lang="en" class="on">EN</button><button data-lang="de">DE</button><button data-lang="ja">JA</button></div>
+      <div class="seg" id="segTheme"><button data-theme="light">Light</button><button data-theme="dark" class="on">Dark</button></div>
+      <button class="demo-btn" id="demoBtn"><svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>30-sec walkthrough</button>
+    </div>
+    <div class="phone">
+      <div class="phone-in" id="phoneIn">
+        <div class="island"></div>
+        <div class="sbar light" id="sbar">
+          <span>9:41</span>
+          <span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.5" y="5.5" width="3" height="5.5" rx="1"/><rect x="9" y="3" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 10.5 5.6 7.9a3.4 3.4 0 0 1 4.8 0L8 10.5Zm0-5.6a6.4 6.4 0 0 0-4.5 1.9L1.7 4.9a9 9 0 0 1 12.6 0l-1.8 1.9A6.4 6.4 0 0 0 8 4.9Z"/></svg>
+            <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20" height="10.8" rx="3" stroke="currentColor" stroke-opacity=".5"/><rect x="2.2" y="2.2" width="16.5" height="7.6" rx="1.8" fill="currentColor"/><path d="M22.3 4.1v3.8a2 2 0 0 0 0-3.8Z" fill="currentColor" fill-opacity=".5"/></svg>
+          </span>
+        </div>
+        <div class="homebar light" id="homebar"></div>
+        <div class="finger" id="finger"></div>
+        <div class="screenwrap">
+
+<!-- WELCOME -->
+<section class="scr scr--welcome" data-id="welcome" data-light="1">
+  <div class="scr-body">
+    <div class="ac-hero" role="img" aria-label="AutoCAD splash"></div>
+    <div class="ac-wel">
+      <div class="ac-wlock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><div>AUTODESK<span>AutoCAD</span></div></div>
+      <p class="ac-tag" data-t="wel.tag"></p>
+    </div>
+  </div>
+  <div class="scr-foot">
+    <button class="ac-btn" data-go="role" data-t="wel.cta"></button>
+    <button class="ac-out" data-go="acct" data-t="wel.signin"></button>
+    <p class="ac-signin" data-t="wel.incl"></p>
+  </div>
+</section>
+
+<!-- ROLE -->
+<section class="scr" data-id="role">
+  <div class="scr-top">
+    <div class="ac-head">
+      <button class="ac-bk" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="ac-lock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><span class="w">AUTODESK<span>AutoCAD</span></span></div>
+      <i class="ac-prog" style="width:25%"></i>
+    </div>
+  </div>
+  <div class="scr-body">
+    <h2 class="ac-h" data-th="role.h"></h2>
+    <p class="ac-sub" data-t="role.sub"></p>
+    <div class="ac-rows" id="roleList"></div>
+    <div style="height:10px"></div>
+  </div>
+  <div class="scr-foot"><button class="ac-btn" data-go="task" data-t="cont"></button></div>
+</section>
+
+<!-- TASK -->
+<section class="scr" data-id="task">
+  <div class="scr-top">
+    <div class="ac-head">
+      <button class="ac-bk" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="ac-lock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><span class="w">AUTODESK<span>AutoCAD</span></span></div>
+      <i class="ac-prog" style="width:50%"></i>
+    </div>
+  </div>
+  <div class="scr-body">
+    <h2 class="ac-h" data-th="task.h"></h2>
+    <p class="ac-sub" data-t="task.sub"></p>
+    <div class="ac-rows" id="taskList"></div>
+    <div style="height:10px"></div>
+  </div>
+  <div class="scr-foot"><button class="ac-btn" id="taskBtn" data-go="files" data-t="cont"></button></div>
+</section>
+
+<!-- FILES -->
+<section class="scr" data-id="files">
+  <div class="scr-top">
+    <div class="ac-head">
+      <button class="ac-bk" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="ac-lock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><span class="w">AUTODESK<span>AutoCAD</span></span></div>
+      <i class="ac-prog" style="width:75%"></i>
+    </div>
+  </div>
+  <div class="scr-body">
+    <h2 class="ac-h" data-th="files.h"></h2>
+    <p class="ac-sub" data-t="files.sub"></p>
+    <div class="ac-tiles" id="fileGrid"></div>
+    <div style="height:10px"></div>
+  </div>
+  <div class="scr-foot">
+    <p class="ac-helper" id="fileCount"></p>
+    <button class="ac-btn" id="fileBtn" data-go="loader" data-t="files.cta"></button>
+  </div>
+</section>
+
+<!-- LOADER -->
+<section class="scr" data-id="loader" data-light="1">
+  <div class="scr-top">
+    <div class="ac-head">
+      <div class="ac-lock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><span class="w">AUTODESK<span>AutoCAD</span></span></div>
+      <i class="ac-prog" style="width:100%"></i>
+    </div>
+  </div>
+  <div class="scr-body">
+    <div class="ac-loadwrap">
+      <svg class="ac-spin" viewBox="0 0 50 50"><circle cx="25" cy="25" r="21" fill="none" stroke="var(--ac-card)" stroke-width="4"/><path d="M25 4a21 21 0 0 1 21 21" fill="none" stroke="#0696D7" stroke-width="4" stroke-linecap="round"/></svg>
+      <h2 class="ac-load-h" data-t="load.h"></h2>
+      <div class="ac-lsteps" id="loadSteps">
+        <div class="ac-ls"><span class="d"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">—</span></div>
+        <div class="ac-ls"><span class="d"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">—</span></div>
+        <div class="ac-ls"><span class="d"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">—</span></div>
+        <div class="ac-ls"><span class="d"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t">—</span></div>
+      </div>
+      <div class="ac-proof"><b>4.4</b><div><div class="st">★★★★★</div><span data-t="proof.l"></span></div></div>
+    </div>
+  </div>
+  <div class="scr-foot"></div>
+</section>
+
+<!-- PAYOFF -->
+<section class="scr" data-id="payoff">
+  <div class="scr-top">
+    <div class="ac-head">
+      <button class="ac-bk" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="ac-lock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><span class="w">AUTODESK<span>AutoCAD</span></span></div>
+    </div>
+  </div>
+  <div class="scr-body">
+    <svg class="ac-art" viewBox="0 0 150 96" style="margin-top:12px;width:110px;height:70px"><use href="#acArt"/></svg>
+    <h2 class="ac-h" style="margin-top:10px" data-t="po.h"></h2>
+    <div class="ac-card"><div class="ac-k" data-t="po.for"></div><div class="ac-v" id="poRole"></div></div>
+    <div class="ac-card"><div class="ac-k" data-t="po.tools"></div><div class="ac-chips" id="poTools"></div></div>
+    <div class="ac-card"><div class="ac-k" data-t="po.open"></div><div class="ac-v" id="poFiles"></div></div>
+    <div class="ac-card">
+      <div class="ac-k" data-t="po.trial"></div>
+      <div class="ac-dates"><div><b id="poToday"></b><span data-t="po.full"></span></div><div><b id="poEnd"></b><span data-t="po.ends"></span></div></div>
+      <p class="ac-note" data-th="po.note"></p>
+    </div>
+    <div style="height:4px"></div>
+  </div>
+  <div class="scr-foot"><button class="ac-btn" data-go="paywall" data-t="cont"></button></div>
+</section>
+
+<!-- PAYWALL -->
+<section class="scr scr--pay" data-id="paywall">
+  <div class="scr-top">
+    <div class="ac-head">
+      <div class="ac-lock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><span class="w">AUTODESK<span>AutoCAD</span></span></div>
+      <button class="ac-x" id="payClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M19 5 5 19M5 5l14 14"/></svg></button>
+    </div>
+  </div>
+  <div class="scr-body">
+    <h2 class="ac-payh" id="payH"></h2>
+    <div class="ac-stars"><i>★★★★★</i><span data-t="pw.stars"></span></div>
+    <button class="ac-pcard" data-v="trial">
+      <svg class="ac-art" viewBox="0 0 150 96"><use href="#acArt"/></svg>
+      <div class="ac-pn">AutoCAD Web</div>
+      <div class="ac-pt" data-t="pw.trial"></div>
+      <div class="ac-nocard" data-t="pw.nocard"></div>
+      <div class="ac-tl">
+        <div class="ac-tli"><i></i><div><b data-t="pw.t1"></b><span data-t="pw.t1s"></span></div></div>
+        <div class="ac-tli"><i></i><div><b id="payEnd"></b><span data-t="pw.t2s"></span></div></div>
+        <div class="ac-tli"><i></i><div><b data-t="pw.t3"></b><span data-t="pw.t3s"></span></div></div>
+      </div>
+    </button>
+    <p class="ac-or" data-t="pw.or"></p>
+    <div class="ac-plans" id="planList">
+      <button class="ac-plan" data-v="year">
+        <span class="ac-badge" data-t="pw.badge"></span>
+        <span class="n" data-t="pw.year"></span>
+        <span class="p"><small>EUR</small><b>116.79</b><small data-t="pw.peryr"></small></span>
+        <span class="s" data-th="pw.yearS"></span>
+      </button>
+      <button class="ac-plan" data-v="month">
+        <span class="n" data-t="pw.month"></span>
+        <span class="p"><small>EUR</small><b>11.68</b><small data-t="pw.permo"></small></span>
+        <span class="s" data-t="pw.monthS"></span>
+      </button>
+    </div>
+    <p class="ac-incl" data-th="pw.incl"></p>
+  </div>
+  <div class="scr-foot">
+    <p class="ac-trust" id="payTrust"></p>
+    <button class="ac-btn" id="payCta"></button>
+    <div class="ac-legal"><a data-t="lg.restore"></a><a data-t="lg.terms"></a><a data-t="lg.priv"></a></div>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section class="scr sheet" data-id="offer">
+  <div class="scr-top">
+    <div class="ac-head">
+      <div class="ac-lock"><svg viewBox="0 0 100 100"><use href="#acIcon"/></svg><span class="w">AUTODESK<span>AutoCAD</span></span></div>
+      <button class="ac-x" id="offClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M19 5 5 19M5 5l14 14"/></svg></button>
+    </div>
+  </div>
+  <div class="scr-body">
+    <h2 class="ac-oh" data-th="of.h"></h2>
+    <p class="ac-os" data-t="of.s"></p>
+    <div class="ac-cmp" id="cmp"></div>
+    <p class="ac-ofine" data-t="of.fine"></p>
+    <div class="ac-mo">
+      <div class="n"><span data-t="pw.month"></span><small data-t="of.renew"></small></div>
+      <div class="p"><small>EUR</small><b>11.68</b><small data-t="pw.permo"></small></div>
+    </div>
+    <div style="height:8px"></div>
+  </div>
+  <div class="scr-foot">
+    <button class="ac-btn" id="offerCta" data-t="of.cta"></button>
+    <button class="ac-ghost" id="offTrial" data-t="of.trial"></button>
+  </div>
+</section>
+
+<!-- ACCOUNT (Autodesk web sign-in, moved behind the paywall) -->
+<section class="scr scr--acct" data-id="acct">
+  <div class="ac-web">
+    <div class="ac-wbar">
+      <button class="c" data-back aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <b>signin.autodesk.com</b>
+    </div>
+    <div class="ac-wbody">
+      <img class="ac-wlogo" src="img/autodesk-wordmark.png" alt="Autodesk">
+      <div class="ac-wrule"></div>
+      <p class="ac-wctx" id="acctCtx"></p>
+      <h3 class="ac-wh" data-t="ac.h"></h3>
+      <p class="ac-wp" data-t="ac.p"></p>
+      <button class="ac-wck" id="ck1"><i><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></i><span data-th="ac.c1"></span></button>
+      <button class="ac-wck" id="ck2"><i><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></i><span data-th="ac.c2"></span></button>
+    </div>
+    <div class="ac-wfoot"><button class="ac-wbtn" id="acctNext" data-t="ac.next"></button></div>
+  </div>
+</section>
+
+        </div>
+      </div>
+    </div>
+    <div class="demo-cap hidden" id="demoCap"><div class="bar"><i id="demoProg"></i></div><p id="demoTxt"></p><button id="demoStop">Stop</button></div>
+    <div class="chips" id="chips"></div>
+    <p class="chiphint">Jump to any screen — answers already filled in.</p>
+    <div class="qr"><img src="img/qr.svg" alt="QR code for this prototype"><span><b>Open it on your phone</b>Scan to try the flow in your hand.</span></div>
+  </div>
+  <div class="panelcol"><div class="pn" id="panel"></div></div>
+</div>
+</div><!-- /view-proto -->
+
+<script>
+/* ================= copy, per language (phone screens only) ================= */
+var LANGS = ['en','de','ja'];
+var T = {
+ 'wel.tag':  ["Design Every Detail. Everywhere.","Jedes Detail gestalten. Überall.","すべてのディテールを、どこでも。"],
+ 'wel.cta':  ["Get Started","Los geht's","はじめる"],
+ 'wel.signin':["Sign In","Anmelden","サインイン"],
+ 'wel.incl': ["Have AutoCAD or AutoCAD LT? Sign in — mobile is included.","AutoCAD oder AutoCAD LT? Anmelden – Mobil ist inklusive.","AutoCAD / AutoCAD LT をお持ちの方はサインイン（モバイル込み）"],
+ 'cont':     ["Continue","Weiter","続ける"],
+ 'role.h':   ["What do you mostly<br>work on?","Woran arbeiten Sie<br>meistens?","主にどんな図面を<br>扱いますか？"],
+ 'role.sub': ["We'll set AutoCAD up around it.","Wir richten AutoCAD danach ein.","それに合わせて AutoCAD を準備します。"],
+ 'task.h':   ["What will you do<br>on your phone?","Was machen Sie<br>auf dem Handy?","スマホで何をしますか？"],
+ 'task.sub': ["Pick all that apply.","Wählen Sie alles Passende.","当てはまるものをすべて選択"],
+ 'files.h':  ["Where do your<br>drawings live?","Wo liegen Ihre<br>Zeichnungen?","図面はどこに<br>保存していますか？"],
+ 'files.sub':["Open DWG files straight from these.","DWG-Dateien direkt von dort öffnen.","ここから DWG ファイルを直接開けます。"],
+ 'files.n':  ["{n} selected","{n} ausgewählt","{n} 件選択中"],
+ 'files.0':  ["Pick at least one","Mindestens eine wählen","1 つ以上選択してください"],
+ 'files.cta':["Set Up AutoCAD","AutoCAD einrichten","AutoCAD を準備"],
+ 'load.h':   ["Setting up AutoCAD…","AutoCAD wird eingerichtet…","AutoCAD を準備しています…"],
+ 'load.r':   ["Getting ready for {x}","Vorbereitung für {x}","{x} 向けに準備中"],
+ 'load.t':   ["Putting {x} first","Zuerst: {x}","優先：{x}"],
+ 'load.f':   ["Lining up {x} so your DWGs open in one tap","{x} wird verbunden – DWGs mit einem Tipp öffnen","{x} から DWG をワンタップで開けるように準備"],
+ 'load.s':   ["Adding a sample drawing to start with","Beispielzeichnung zum Start wird hinzugefügt","最初に使えるサンプル図面を追加"],
+ 'and':      [" and "," und ","と"],
+ 'proof.l':  ["from 6.3K ratings on the App Store","aus 6.300 Bewertungen im App Store","App Store の 6,300 件の評価"],
+ 'po.h':     ["Your AutoCAD is ready","Ihr AutoCAD ist bereit","AutoCAD の準備ができました"],
+ 'po.for':   ["Set up for","Eingerichtet für","用途"],
+ 'po.tools': ["Your tools · tap to change","Ihre Werkzeuge · antippen zum Ändern","ツール · タップで変更"],
+ 'po.open':  ["Opens drawings from","Öffnet Zeichnungen aus","図面の保存先"],
+ 'po.trial': ["Your 30 days of full access","Ihre 30 Tage Vollzugriff","30 日間のフルアクセス"],
+ 'po.full':  ["Create, edit and view","Erstellen, bearbeiten, ansehen","作成・編集・表示"],
+ 'po.ends':  ["Trial ends","Testphase endet","トライアル終了"],
+ 'po.note':  ["No credit card. After that, <b>view-only stays free</b>.","Keine Kreditkarte. Danach bleibt <b>Ansehen kostenlos</b>.","クレジットカード不要。終了後も<b>閲覧は無料</b>です。"],
+ 'pw.h':     ["{v} Your {n}, Anywhere","{n} überall {v}","{n}をどこでも{v}"],
+ 'pw.stars': ["4.4 · 6.3K ratings on the App Store","4,4 · 6.300 Bewertungen im App Store","4.4 · App Store 評価 6,300 件"],
+ 'pw.trial': ["30-day Trial","30 Tage testen","30 日間トライアル"],
+ 'pw.nocard':["No credit card required","Keine Kreditkarte erforderlich","クレジットカード不要"],
+ 'pw.t1':    ["Today","Heute","今日"],
+ 'pw.t1s':   ["Full access: create, edit and view","Vollzugriff: erstellen, bearbeiten, ansehen","フルアクセス：作成・編集・表示"],
+ 'pw.t2s':   ["Trial ends — nothing is charged","Testphase endet – keine Abbuchung","トライアル終了 — 請求はありません"],
+ 'pw.t3':    ["After that","Danach","その後"],
+ 'pw.t3s':   ["Keep view-only for free, or pick a plan","Kostenlos ansehen oder Abo wählen","閲覧は無料のまま、またはプランを選択"],
+ 'pw.or':    ["Or subscribe now","Oder jetzt abonnieren","または今すぐ購読"],
+ 'pw.year':  ["Yearly","Jährlich","年額"],
+ 'pw.month': ["Monthly","Monatlich","月額"],
+ 'pw.peryr': ["/ yr","/ Jahr","/ 年"],
+ 'pw.permo': ["/ mo","/ Monat","/ 月"],
+ 'pw.badge': ["2 months free","2 Monate gratis","2 か月分無料"],
+ 'pw.yearS': ["<em>EUR 9.73 / mo</em>, billed yearly","<em>EUR 9.73 / Monat</em>, jährlich","<em>月あたり EUR 9.73</em>・年払い"],
+ 'pw.monthS':["Billed monthly","Monatlich abgerechnet","毎月請求"],
+ 'pw.incl':  ["AutoCAD Web is included with an AutoCAD or AutoCAD LT subscription. <b>Sign In</b>","AutoCAD Web ist in AutoCAD- und AutoCAD LT-Abos enthalten. <b>Anmelden</b>","AutoCAD Web は AutoCAD / AutoCAD LT サブスクリプションに含まれます。<b>サインイン</b>"],
+ 'pw.ctaT':  ["Start Free Trial","Kostenlos testen","無料トライアルを開始"],
+ 'pw.ctaY':  ["Buy Yearly · EUR 116.79","Jährlich kaufen · EUR 116.79","年額で購入 · EUR 116.79"],
+ 'pw.ctaM':  ["Buy Monthly · EUR 11.68","Monatlich kaufen · EUR 11.68","月額で購入 · EUR 11.68"],
+ 'pw.trT':   ["Nothing today · trial runs to {d}","Heute nichts · Test bis {d}","本日の請求なし · {d} まで"],
+ 'pw.trY':   ["EUR 116.79 today · renews yearly","Heute EUR 116.79 · jährliche Verlängerung","本日 EUR 116.79 · 毎年自動更新"],
+ 'pw.trM':   ["EUR 11.68 today · renews monthly","Heute EUR 11.68 · monatliche Verlängerung","本日 EUR 11.68 · 毎月自動更新"],
+ 'lg.restore':["Restore","Wiederherstellen","復元"],
+ 'lg.terms': ["Terms of Use","AGB","利用規約"],
+ 'lg.priv':  ["Privacy","Datenschutz","プライバシー"],
+ 'of.h':     ["Just need it<br>for one job?","Nur für<br>ein Projekt?","1 つの案件だけ<br>使いたいですか？"],
+ 'of.s':     ["Skip the trial. Edit today, month to month.","Ohne Test. Heute bearbeiten, monatlich.","トライアルなしで今日から編集、月ごとに。"],
+ 'of.c0':    ["","",""],
+ 'of.cf':    ["View-only","Nur ansehen","閲覧のみ"],
+ 'of.cp':    ["AutoCAD Web","AutoCAD Web","AutoCAD Web"],
+ 'of.fine':  ["View-only is the free plan after the 30-day trial, as described on the App Store.","„Nur ansehen“ ist der kostenlose Plan nach dem 30-Tage-Test, laut App Store.","「閲覧のみ」は 30 日間トライアル後の無料プランです（App Store の説明より）。"],
+ 'of.renew': ["Turn off renewal anytime in Settings","Verlängerung jederzeit in Einstellungen aus","自動更新は設定でいつでも停止"],
+ 'of.cta':   ["Buy Monthly · EUR 11.68","Monatlich kaufen · EUR 11.68","月額で購入 · EUR 11.68"],
+ 'of.trial': ["Or start the free 30-day trial","Oder 30 Tage kostenlos testen","または 30 日間無料トライアル"],
+ 'ac.ctxT':  ["<b>One last step.</b> Create your Autodesk account to start your free trial.","<b>Letzter Schritt.</b> Autodesk-Konto erstellen und Test starten.","<b>最後のステップ。</b>Autodesk アカウントを作成してトライアルを開始。"],
+ 'ac.ctxY':  ["<b>One last step.</b> Your yearly plan is tied to your Autodesk account.","<b>Letzter Schritt.</b> Ihr Jahresabo wird mit Ihrem Autodesk-Konto verknüpft.","<b>最後のステップ。</b>年額プランを Autodesk アカウントに紐付けます。"],
+ 'ac.ctxM':  ["<b>One last step.</b> Your monthly plan is tied to your Autodesk account.","<b>Letzter Schritt.</b> Ihr Monatsabo wird mit Ihrem Autodesk-Konto verknüpft.","<b>最後のステップ。</b>月額プランを Autodesk アカウントに紐付けます。"],
+ 'ac.ctxS':  ["Sign in with your Autodesk account.","Mit Ihrem Autodesk-Konto anmelden.","Autodesk アカウントでサインイン"],
+ 'ac.h':     ["Terms of use","Nutzungsbedingungen","利用規約"],
+ 'ac.p':     ["These terms apply to your Autodesk account and all software, web services, and benefits included with your subscription.","Diese Bedingungen gelten für Ihr Autodesk-Konto und alle Software, Webdienste und Vorteile Ihres Abonnements.","この規約は、Autodesk アカウントおよびサブスクリプションに含まれるすべてのソフトウェア、Web サービス、特典に適用されます。"],
+ 'ac.c1':    ["I agree to the <u>Autodesk Terms of Use</u> and acknowledge the <u>Privacy Statement</u>.","Ich stimme den <u>Autodesk-Nutzungsbedingungen</u> zu und habe die <u>Datenschutzerklärung</u> zur Kenntnis genommen.","<u>Autodesk 利用規約</u>に同意し、<u>プライバシーステートメント</u>を確認しました。"],
+ 'ac.c2':    ["Check this box to receive electronic marketing communications from Autodesk.","Ich möchte Marketing-E-Mails von Autodesk erhalten.","Autodesk からのマーケティングメールを受け取る"],
+ 'ac.next':  ["Next","Weiter","次へ"]
+};
+var ICON = {
+  arch:'<path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6"/>',
+  cons:'<path d="M3 20h18M5 20V9l7-4 7 4v11M9 20v-5h6v5M3 9h18"/>',
+  mep:'<path d="M4 7h10a3 3 0 0 1 3 3v10M4 12h6a2 2 0 0 1 2 2v6M18 4v3"/>',
+  civil:'<path d="M2 18h20M4 18v-4a8 8 0 0 1 16 0v4M8 18v-3M12 18v-4M16 18v-3"/>',
+  prod:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+  learn:'<path d="M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5"/>',
+  view:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  markup:'<path d="M4 20l4-1 11-11-3-3L5 16zM14 6l3 3"/>',
+  measure:'<path d="M3 17 17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2"/>',
+  draft:'<path d="M4 20 20 4M4 4h6M4 4v6M20 20h-6M20 20v-6"/>',
+  offline:'<path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4-2.5M12 20h.01M19 13a10 10 0 0 0-3-2"/>',
+  cloud:'<path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/>',
+  phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'
+};
+var ROLES = [
+  {k:'arch',  l:['Architecture & interiors','Architektur & Innenausbau','建築・インテリア'], n:['Floor Plans','Grundrisse','平面図']},
+  {k:'cons',  l:['Construction & site work','Bau & Baustelle','建設・現場'],             n:['Site Drawings','Baustellenpläne','現場図面']},
+  {k:'mep',   l:['MEP & building services','TGA & Gebäudetechnik','設備（MEP）'],        n:['MEP Drawings','TGA-Pläne','設備図面']},
+  {k:'civil', l:['Civil & infrastructure','Tiefbau & Infrastruktur','土木・インフラ'],    n:['Civil Drawings','Tiefbaupläne','土木図面']},
+  {k:'prod',  l:['Product & manufacturing','Produkt & Fertigung','製品・製造'],          n:['Part Drawings','Bauteilzeichnungen','部品図']},
+  {k:'learn', l:['Learning AutoCAD','AutoCAD lernen','AutoCAD を学習中'],               n:['Drawings','Zeichnungen','図面']}
+];
+var TASKS = [
+  {k:'view',   l:['View drawings on site','Pläne vor Ort ansehen','現場で図面を見る'],           s:['Viewing','Ansehen','表示'],      v:['View','ansehen','表示']},
+  {k:'markup', l:['Mark up and annotate','Markieren & kommentieren','マークアップ・注釈'],       s:['Markup','Markieren','マークアップ'], v:['Mark Up','markieren','マークアップ']},
+  {k:'measure',l:['Measure distance, angle, area','Abstand, Winkel, Fläche messen','距離・角度・面積を測定'], s:['Measure','Messen','測定'], v:['Measure','messen','測定']},
+  {k:'draft',  l:['Draft and edit 2D','2D zeichnen & bearbeiten','2D の作図・編集'],            s:['Drafting','Zeichnen','作図'],     v:['Edit','bearbeiten','編集']},
+  {k:'offline',l:['Work offline, sync later','Offline arbeiten, später sync.','オフライン作業・後で同期'], s:['Offline','Offline','オフライン'], v:['Open','öffnen','表示']}
+];
+var FILES = [
+  {k:'adrive', n:'Autodesk Drive', ic:'cloud'}, {k:'adocs', n:'Autodesk Docs', ic:'cloud'},
+  {k:'onedrive', n:'Microsoft OneDrive', ic:'cloud'}, {k:'box', n:'Box', ic:'cloud'},
+  {k:'dropbox', n:'Dropbox', ic:'cloud'}, {k:'gdrive', n:'Google Drive', ic:'cloud'},
+  {k:'device', l:['Email or this device','E-Mail oder dieses Gerät','メール・この端末'], ic:'phone', wide:true}
+];
+var ROLE={}, TASK={}, FILE={};
+ROLES.forEach(function(r){ ROLE[r.k]=r; }); TASKS.forEach(function(r){ TASK[r.k]=r; }); FILES.forEach(function(r){ FILE[r.k]=r; });
+var LOCALE = {en:'en-GB', de:'de-DE', ja:'ja-JP'};
+
+/* ================= state ================= */
+var S0 = {lang:'en', theme:'dark'};
+function defaults(){ return { lang:S0.lang, theme:S0.theme, role:'cons', tasks:['view','markup'], files:['dropbox','adocs'], tools:null, plan:'trial', from:'' }; }
+var S = defaults();
+function L(){ return LANGS.indexOf(S.lang); }
+function t(k,v){ var s=(T[k]||[k])[L()]; if(v) Object.keys(v).forEach(function(x){ s=s.split('{'+x+'}').join(v[x]); }); return s; }
+function joinL(a){ if(S.lang==='ja') return a.join('・'); return a.length<2 ? (a[0]||'') : a.slice(0,-1).join(', ')+t('and')+a[a.length-1]; }
+function fname(k){ var f=FILE[k]; return f.n || f.l[L()]; }
+function ordTasks(){ return TASKS.map(function(x){ return x.k; }).filter(function(k){ return S.tasks.indexOf(k)>-1; }); }
+function trialEnd(){ var d=new Date(); d.setDate(d.getDate()+30); return d; }
+function fmtDate(d,long){ return new Intl.DateTimeFormat(LOCALE[S.lang], long ? {day:'numeric',month:'long',year:'numeric'} : {day:'numeric',month:'short'}).format(d); }
+
+/* ================= builders (re-run on language change) ================= */
+var tickSvg='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
+function row(icon,label,sq){ return '<span class="ac-ic"><svg viewBox="0 0 24 24">'+ICON[icon]+'</svg></span><span>'+label+'</span><span class="ac-ck'+(sq?' sq':'')+'">'+tickSvg+'</span>'; }
+function buildRoles(){ var g=document.getElementById('roleList'); g.innerHTML='';
+  ROLES.forEach(function(r){ var b=document.createElement('button'); b.className='ac-row'; b.dataset.v=r.k; b.innerHTML=row(r.k,r.l[L()]);
+    b.addEventListener('click',function(){ S.role=r.k; syncScreen(); }); g.appendChild(b); }); }
+function buildTasks(){ var g=document.getElementById('taskList'); g.innerHTML='';
+  TASKS.forEach(function(r){ var b=document.createElement('button'); b.className='ac-row'; b.dataset.v=r.k; b.innerHTML=row(r.k,r.l[L()],true);
+    b.addEventListener('click',function(){ var i=S.tasks.indexOf(r.k); if(i>-1) S.tasks.splice(i,1); else S.tasks.push(r.k); S.tools=null; syncScreen(); }); g.appendChild(b); }); }
+function buildFiles(){ var g=document.getElementById('fileGrid'); g.innerHTML='';
+  FILES.forEach(function(f){ var b=document.createElement('button'); b.className='ac-tile'+(f.wide?' wide':''); b.dataset.v=f.k;
+    b.innerHTML='<svg viewBox="0 0 24 24">'+ICON[f.ic]+'</svg><span>'+fname(f.k)+'</span><span class="tk">'+tickSvg+'</span>';
+    b.addEventListener('click',function(){ var i=S.files.indexOf(f.k); if(i>-1) S.files.splice(i,1); else S.files.push(f.k); syncScreen(); }); g.appendChild(b); }); }
+function buildCmp(){
+  var rows=[['View 2D drawings','2D-Zeichnungen ansehen','2D 図面の表示',1],['Create and edit 2D drawings','2D-Zeichnungen erstellen & bearbeiten','2D 図面の作成・編集',0],
+    ['Annotation and markup tools','Anmerkungs- & Markup-Werkzeuge','注釈・マークアップ',0],['Manage layers, insert blocks','Layer verwalten, Blöcke einfügen','画層管理・ブロック挿入',0]];
+  var ok='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>', h='<div class="r h"><span></span><span>'+t('of.cf')+'</span><span>'+t('of.cp')+'</span></div>';
+  rows.forEach(function(r){ h+='<div class="r"><span>'+r[L()]+'</span><span>'+(r[3]?ok:'<span class="no">—</span>')+'</span><span>'+ok+'</span></div>'; });
+  document.getElementById('cmp').innerHTML=h; }
+function applyStatic(){
+  document.documentElement.lang=S.lang;
+  document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent=t(el.dataset.t); });
+  document.querySelectorAll('[data-th]').forEach(function(el){ el.innerHTML=t(el.dataset.th); });
+  buildRoles(); buildTasks(); buildFiles(); buildCmp();
+}
+
+/* ================= everything downstream reads S ================= */
+function syncScreen(){
+  var li=L(), r=ROLE[S.role], tk=ordTasks();
+  if(!S.tools) S.tools=tk.slice();
+  document.querySelectorAll('#roleList .ac-row').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.role); });
+  document.querySelectorAll('#taskList .ac-row').forEach(function(b){ b.classList.toggle('on', S.tasks.indexOf(b.dataset.v)>-1); });
+  document.getElementById('taskBtn').disabled=!S.tasks.length;
+  document.querySelectorAll('#fileGrid .ac-tile').forEach(function(b){ b.classList.toggle('on', S.files.indexOf(b.dataset.v)>-1); });
+  var nf=S.files.length; document.getElementById('fileCount').textContent = nf ? t('files.n',{n:nf}) : t('files.0');
+  document.getElementById('fileBtn').disabled=!nf;
+
+  var fnames=S.files.map(fname), tnames=tk.map(function(k){ return TASK[k].s[li]; });
+  var st=document.querySelectorAll('#loadSteps .ac-ls .t');
+  st[0].textContent=t('load.r',{x:r.l[li]});
+  st[1].textContent=t('load.t',{x:joinL(tnames.length?tnames:[TASK.view.s[li]])});
+  st[2].textContent=t('load.f',{x:joinL(fnames.slice(0,2))});
+  st[3].textContent=t('load.s');
+
+  document.getElementById('poRole').textContent=r.l[li];
+  var pt=document.getElementById('poTools'); pt.innerHTML='';
+  TASKS.forEach(function(x){ var on=S.tools.indexOf(x.k)>-1; if(!on && tk.indexOf(x.k)<0 && pt.children.length>=5) return;
+    var b=document.createElement('button'); b.className='ac-chip'+(on?' on':''); b.dataset.v=x.k;
+    b.innerHTML=(on?tickSvg:'')+'<span>'+x.s[li]+'</span>';
+    b.addEventListener('click',function(){ var i=S.tools.indexOf(x.k); if(i>-1){ if(S.tools.length>1) S.tools.splice(i,1); } else S.tools.push(x.k); syncScreen(); });
+    pt.appendChild(b); });
+  document.getElementById('poFiles').textContent=joinL(fnames);
+  var end=trialEnd();
+  document.getElementById('poToday').textContent=fmtDate(new Date());
+  document.getElementById('poEnd').textContent=fmtDate(end,true);
+
+  /* paywall headline: their verb + their drawings */
+  var lead=TASKS.filter(function(x){ return S.tools.indexOf(x.k)>-1; })[0] || TASK.view;
+  document.getElementById('payH').textContent=t('pw.h',{v:lead.v[li],n:r.n[li]});
+  document.getElementById('payEnd').textContent=fmtDate(end,true);
+  document.querySelector('.ac-pcard').classList.toggle('on', S.plan==='trial');
+  document.querySelectorAll('#planList .ac-plan').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.plan); });
+  document.getElementById('payTrust').textContent = S.plan==='trial' ? t('pw.trT',{d:fmtDate(end)}) : (S.plan==='year' ? t('pw.trY') : t('pw.trM'));
+  document.getElementById('payCta').textContent = S.plan==='trial' ? t('pw.ctaT') : (S.plan==='year' ? t('pw.ctaY') : t('pw.ctaM'));
+
+  var ctx = S.from==='signin' ? t('ac.ctxS') : (S.plan==='year' ? t('ac.ctxY') : (S.plan==='month' ? t('ac.ctxM') : t('ac.ctxT')));
+  document.getElementById('acctCtx').innerHTML=ctx;
+  document.getElementById('acctNext').disabled=!ck1.classList.contains('on');
+}
+
+/* ================= router ================= */
+var ORDER=['welcome','role','task','files','loader','payoff','paywall','offer','acct'];
+var LABEL={welcome:'Welcome',role:'Your work',task:'On mobile',files:'Your files',loader:'Loader',payoff:'Payoff',paywall:'Paywall',offer:'Offer on close',acct:'Account'};
+var scr={}, hist=[], cur='welcome', loadTimers=[];
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id]=s; });
+var ck1=document.getElementById('ck1'), ck2=document.getElementById('ck2');
+
+function chrome(){ var light=S.theme==='light', web=cur==='acct';
+  var l = web ? true : (light ? (cur==='welcome') : true);
+  document.getElementById('sbar').classList.toggle('light',l);
+  document.getElementById('homebar').classList.toggle('light',!light && !web); }
+function enter(id){ chrome(); paintChips(); paintPanel(); clearLoad(); if(id==='loader') runLoader(); }
+function go(id,opts){
+  opts=opts||{}; if(id===cur) return;
+  var from=scr[cur], to=scr[id];
+  if(!opts.back) hist.push(cur);
+  if(from){ from.classList.remove('is-active');
+    if(!to.classList.contains('sheet') && !from.classList.contains('sheet')) from.classList.add('is-past'); }
+  if(to.classList.contains('sheet')) from.classList.add('is-active');
+  Object.keys(scr).forEach(function(k){ if(k!==id && !(to.classList.contains('sheet') && k===cur)) scr[k].classList.remove('is-active'); });
+  to.classList.remove('is-past'); to.classList.add('is-active');
+  cur=id; syncScreen(); enter(id);
+}
+function back(){
+  if(!hist.length) return;
+  var prev=hist.pop();
+  scr[cur].classList.remove('is-active');
+  scr[prev].classList.remove('is-past'); scr[prev].classList.add('is-active');
+  cur=prev; enter(prev);
+}
+function jump(id){
+  var i=ORDER.indexOf(id);
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active','is-past'); });
+  hist=ORDER.slice(0,i<0?0:i);
+  if(id==='offer') scr.paywall.classList.add('is-active');
+  if(id==='acct'){ hist=ORDER.slice(0,ORDER.indexOf('paywall')+1); S.from=''; }
+  scr[id].classList.add('is-active'); cur=id;
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+  syncScreen(); enter(id);
+}
+var chipsBuilt=false;
+function paintChips(){
+  var c=document.getElementById('chips');
+  if(!chipsBuilt){ chipsBuilt=true;
+    ORDER.forEach(function(id){
+      var b=document.createElement('button'); b.className='chip'+(id==='offer'?' offer':''); b.textContent=LABEL[id];
+      b.dataset.id=id; b.onclick=function(){ stopDemo(); jump(id); }; c.appendChild(b);
+    });
+  }
+  c.querySelectorAll('.chip').forEach(function(b){ b.classList.toggle('on', b.dataset.id===cur); });
+}
+function clearLoad(){ loadTimers.forEach(clearTimeout); loadTimers=[]; }
+function runLoader(){
+  var k=demo.on?0.48:1, steps=[].slice.call(document.querySelectorAll('#loadSteps .ac-ls'));
+  steps.forEach(function(s){ s.classList.remove('on'); });
+  steps.forEach(function(s,i){ loadTimers.push(setTimeout(function(){ s.classList.add('on'); },(600+i*850)*k)); });
+  loadTimers.push(setTimeout(function(){ if(cur==='loader') go('payoff'); },4600*k));
+}
+
+/* ================= wiring ================= */
+document.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ if(b.disabled) return; S.from = b.dataset.go==='acct' ? 'signin' : S.from; go(b.dataset.go); }); });
+document.querySelectorAll('[data-back]').forEach(function(b){ b.addEventListener('click',back); });
+document.querySelector('.ac-pcard').addEventListener('click',function(){ S.plan='trial'; syncScreen(); });
+document.querySelectorAll('#planList .ac-plan').forEach(function(b){ b.addEventListener('click',function(){ S.plan=b.dataset.v; syncScreen(); }); });
+document.querySelector('.ac-incl').addEventListener('click',function(e){ if(e.target.tagName==='B'){ S.from='signin'; go('acct'); } });
+document.getElementById('payClose').addEventListener('click',function(){ go('offer'); });
+document.getElementById('payCta').addEventListener('click',function(){ S.from=''; go('acct'); });
+document.getElementById('offerCta').addEventListener('click',function(){ S.plan='month'; S.from=''; go('acct'); });
+document.getElementById('offTrial').addEventListener('click',function(){ S.plan='trial'; S.from=''; go('acct'); });
+document.getElementById('offClose').addEventListener('click',function(){ jump('welcome'); });
+[ck1,ck2].forEach(function(c){ c.addEventListener('click',function(){ c.classList.toggle('on'); syncScreen(); }); });
+document.getElementById('acctNext').addEventListener('click',function(){ jump('welcome'); });
+
+function setSeg(id,attr,val){ document.querySelectorAll('#'+id+' button').forEach(function(b){ b.classList.toggle('on', b.dataset[attr]===val); }); }
+function setLang(l){ S.lang=l; S0.lang=l; setSeg('segLang','lang',l); applyStatic(); syncScreen(); paintPanel(); }
+function setTheme(th){ S.theme=th; S0.theme=th; document.getElementById('phoneIn').classList.toggle('light',th==='light'); setSeg('segTheme','theme',th); chrome(); }
+document.querySelectorAll('#segLang button').forEach(function(b){ b.addEventListener('click',function(){ stopDemo(); setLang(b.dataset.lang); }); });
+document.querySelectorAll('#segTheme button').forEach(function(b){ b.addEventListener('click',function(){ setTheme(b.dataset.theme); }); });
+
+/* ================= the 30-second walkthrough ================= */
+var demo={tok:0,on:false,t0:0,iv:null}, finger=document.getElementById('finger'), phoneIn=document.getElementById('phoneIn');
+function W(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+function cap(txt){ document.getElementById('demoTxt').textContent=txt; }
+async function tap(sel,tok){
+  if(demo.tok!==tok) throw 0;
+  var el=document.querySelector(sel); if(!el) return;
+  var r=el.getBoundingClientRect(), p=phoneIn.getBoundingClientRect(), z=p.width/phoneIn.offsetWidth||1;
+  finger.style.left=((r.left-p.left+r.width/2)/z)+'px'; finger.style.top=((r.top-p.top+r.height/2)/z)+'px';
+  finger.classList.add('show'); await W(380); if(demo.tok!==tok) throw 0;
+  finger.classList.add('press'); await W(120); finger.classList.remove('press'); el.click(); await W(160);
+  if(demo.tok!==tok) throw 0;
+}
+async function pause(ms,tok){ await W(ms); if(demo.tok!==tok) throw 0; }
+function startDemo(){
+  stopDemo(); var tok=++demo.tok; demo.on=true; demo.t0=Date.now();
+  var keep={lang:S.lang,theme:S.theme}; S=defaults(); S.lang=keep.lang; S.theme=keep.theme;
+  [ck1,ck2].forEach(function(c){ c.classList.remove('on'); });
+  applyStatic(); jump('welcome');
+  document.getElementById('demoCap').classList.remove('hidden');
+  demo.iv=setInterval(function(){ document.getElementById('demoProg').style.width=Math.min(100,(Date.now()-demo.t0)/290)+'%'; },200);
+  (async function(){
+    try{
+      cap('A new install gets a Get Started door. Sign In stays for desktop subscribers.'); await pause(1700,tok);
+      await tap('[data-id=welcome] .ac-btn',tok);
+      cap('Three quick questions. First: what they work on.'); await pause(650,tok);
+      await tap('#roleList [data-v=arch]',tok); await pause(350,tok); await tap('[data-id=role] .ac-btn',tok);
+      cap('What they will do on the phone — all features from your listing.'); await pause(650,tok);
+      await tap('#taskList [data-v=measure]',tok); await pause(350,tok); await tap('#taskBtn',tok);
+      cap('Where their DWGs live — the services you already open from.'); await pause(650,tok);
+      await tap('#fileGrid [data-v=onedrive]',tok); await pause(350,tok); await tap('#fileBtn',tok);
+      cap('Their answers, read back while it sets up, next to your 4.4.'); await pause(2500,tok);
+      cap('The payoff: their tools, their storage and the day their 30 days end.'); await pause(1200,tok);
+      await tap('#poTools [data-v=view]',tok); await pause(700,tok);
+      await tap('[data-id=payoff] .ac-btn',tok);
+      cap('The paywall names their drawings, with the trial dates and both plans in view.'); await pause(1700,tok);
+      await tap('#planList [data-v=year]',tok); await pause(800,tok); await tap('.ac-pcard',tok); await pause(400,tok);
+      cap('They close it. Instead of “sign out?”, a month-to-month plan on your own price.'); await tap('#payClose',tok); await pause(2300,tok);
+      cap('That is the flow. Every screen is yours — only the order changed.');
+      finger.classList.remove('show'); await pause(2200,tok); stopDemo();
+    }catch(e){}
+  })();
+}
+function stopDemo(){ if(!demo.on) return; demo.tok++; demo.on=false; clearInterval(demo.iv); finger.classList.remove('show','press');
+  document.getElementById('demoCap').classList.add('hidden'); }
+document.getElementById('demoBtn').addEventListener('click',startDemo);
+document.getElementById('demoStop').addEventListener('click',stopDemo);
+phoneIn.addEventListener('pointerdown',function(e){ if(e.isTrusted && demo.on) stopDemo(); });
+</script>
+<script>
+/* ---- the short panel: hypothesis + potential outcome, nothing else ---- */
+var PANEL = {
+welcome:{n:2,t:'Let people in before you ask for an account',
+ hyp:'Try a Get Started door that leads into the app’s questions and paywall, <b>because today both doors open the Autodesk web sign-in and a terms checkbox before anyone has seen what the app does</b>. Sign In stays for AutoCAD and AutoCAD LT subscribers, who get mobile included.',
+ kept:'Your splash — the red light streak, the AutoCAD mark, “Design Every Detail. Everywhere.”, the filled blue and outlined buttons.',
+ out:'CR +8% · ARPU +17%'},
+role:{n:4,t:'Ask three questions, then show the setup they unlock',
+ hyp:'Try asking what they mostly work on, <b>because the answer then names their drawings in the paywall headline</b>. Pick Architecture and the paywall talks about floor plans.',
+ kept:'Your dark surface, square-cornered cards, lavender accent and blue button. The header lockup is the one on your paywall.',
+ out:'CR +10–15%'},
+task:{n:4,t:'Ask three questions, then show the setup they unlock',
+ hyp:'Try asking what they will do on the phone, <b>because those become the tools on the payoff screen and the verb in your paywall headline</b>. Every option is a feature from your App Store listing.',
+ kept:'Your cards and blue selection. The five options are your own feature list.',
+ out:'CR +10–15%'},
+files:{n:4,t:'Ask three questions, then show the setup they unlock',
+ hyp:'Try asking where their drawings live, <b>because opening a DWG from Dropbox or OneDrive is the first thing a new user needs to work</b>. The six services are the ones your listing names.',
+ kept:'Your card surface. Services are shown as names, not logos.',
+ out:'CR +10–15%'},
+loader:{n:4,t:'Ask three questions, then show the setup they unlock',
+ hyp:'Try reading their answers back while it sets up, <b>because a loader only pays off when something personal comes after it</b>. Your 4.4 from 6.3K App Store ratings sits underneath.',
+ kept:'Your dark surface, header lockup and blue. Each line is their own answer.',
+ out:'CR +10–15%'},
+payoff:{n:4,t:'Ask three questions, then show the setup they unlock',
+ hyp:'Try showing their setup before the price: their work, their tools, where files open from, and the exact day their 30 days end, <b>because the date is real arithmetic from today and everything else is their own answer</b>. Tap a tool and the paywall headline changes.',
+ kept:'Your lavender tablet illustration, card surface and type. “View-only stays free” is from your listing.',
+ out:'CR +10–15%'},
+paywall:{n:3,t:'Name their work on the paywall and show both plans up top',
+ hyp:'Try a headline built from their answers and both plans on the first screen, <b>because today “Work From Anywhere With AutoCAD” speaks to nobody in particular and the yearly plan sits two screens down</b>. EUR 116.79 against twelve months at EUR 11.68 is two months free; now it says so.',
+ n2:5, out2:'CR +10–15%',
+ hyp2:'Try your 4.4 from 6.3K ratings under the headline and a day-by-day line on the trial card, <b>because “No credit card required” never says what happens on day 30 — and the answer, free view-only, is good news</b>.',
+ kept:'Your header with the lockup and thin X, the tablet illustration riding the card edge, “AutoCAD Web / 30-day Trial / No credit card required”, “Or subscribe now”, your EUR prices and the line about AutoCAD and AutoCAD LT subscriptions.',
+ out:'CR +15–20%'},
+offer:{n:1,t:'Make closing the paywall a second chance, not a sign-out',
+ hyp:'Try this screen on the paywall’s X, <b>because today closing it asks “Sure you want to sign out?” — the only second chance is the trial they just turned down</b>. It offers your monthly plan with no trial, next to what the free view-only plan cannot do. Nothing here is invented: EUR 11.68 is your own price.',
+ kept:'Your header, card surface, blue CTA and EUR price format. The comparison rows are your own feature list.',
+ out:'ARPU +10–15%'},
+acct:{ctx:true,t:'Your Autodesk sign-in',
+ kept:'Your sign-in sheet and Terms of use, unchanged — it now arrives after a plan is chosen, with one line on top saying why. This is where idea 02 lands.'}
+};
+function outBlock(lab,val){ return '<div class="pn-out"><div class="lab">'+lab+'</div><div class="v">'+val+'</div></div>'; }
+function paintPanel(){
+  var d=PANEL[cur]; if(!d) return;
+  var h='';
+  if(d.ctx){
+    h += '<div class="pn-n ctx">Context · no change proposed</div><h3 class="pn-t">'+d.t+'</h3><div class="pn-kept">'+d.kept+'</div>';
+  } else {
+    h += '<div class="pn-n">Idea '+d.n+' of 5</div><h3 class="pn-t">'+d.t+'</h3><p class="pn-hyp">'+d.hyp+'</p>'
+       + outBlock('Potential outcome · based on Adapty data', d.out);
+    if(d.hyp2){
+      h += '<div class="pn-sep"></div><div class="pn-n">Idea '+d.n2+' of 5</div><h3 class="pn-t">Put your 4.4 and the trial dates beside the button</h3>'
+         + '<p class="pn-hyp" style="margin-top:12px">'+d.hyp2+'</p>' + outBlock('Potential outcome · based on Adapty data', d.out2);
+    }
+    h += '<div class="pn-kept"><b>Your design, unchanged.</b> '+d.kept+'</div>';
+  }
+  if(S.lang!=='en') h += '<div class="pn-kept"><b>Language.</b> Screens are shown in '+(S.lang==='de'?'German':'Japanese')+' — the app ships in 12 languages — to show one flow serving every market. Translated by us; store prices stay as published in euros.</div>';
+  h += '<div class="pn-foot">Ranges are Adapty’s expected effect from tests across 30,000+ subscription apps — not measured lift for AutoCAD. Prices, ratings and feature lines come from your own published material.</div>';
+  document.getElementById('panel').innerHTML = h;
+}
+
+/* ---- views, jumps from the overview ---- */
+function showView(v){
+  if(v!=='proto') stopDemo();
+  document.querySelectorAll('.view').forEach(function(x){ x.classList.remove('on'); });
+  document.getElementById('view-'+v).classList.add('on');
+  document.querySelectorAll('.nav-links button[data-view]').forEach(function(b){ b.classList.toggle('on', b.dataset.view===v); });
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-view]').forEach(function(b){ b.addEventListener('click',function(){ showView(b.dataset.view); }); });
+document.querySelectorAll('.idea[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ showView('proto'); jump(b.dataset.jump); }); });
+document.querySelectorAll('[data-demo]').forEach(function(b){ b.addEventListener('click',function(){ showView('proto'); startDemo(); }); });
+
+applyStatic();
+scr.welcome.classList.add('is-active');
+syncScreen(); chrome(); paintChips(); paintPanel();
+if(/[?&]open=proto/.test(location.search)) showView('proto');
+</script>
+</body>
+</html>
